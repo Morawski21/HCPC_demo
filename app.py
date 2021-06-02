@@ -7,6 +7,7 @@ import numpy as np
 
 from credentials import *
 
+IS_DARK_THEME = False
 
 # Function for retrieving data
 def query_search(query, pages=1):
