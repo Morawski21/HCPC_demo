@@ -7,8 +7,20 @@ import numpy as np
 
 from credentials import *
 
-IS_DARK_THEME = False
-CURRENT_THEME = "myT"
+CURRENT_THEME = "blue"
+IS_DARK_THEME = True
+EXPANDER_TEXT = """
+    This is a custom theme. You can enable it by copying the following code
+    to `.streamlit/config.toml`:
+    ```python
+    [theme]
+    primaryColor = "#E694FF"
+    backgroundColor = "#00172B"
+    secondaryBackgroundColor = "#0083B8"
+    textColor = "#C6CDD4"
+    font = "sans-serif"
+    ```
+    """
 
 # Function for retrieving data
 def query_search(query, pages=1):
@@ -49,11 +61,7 @@ auth.set_access_token(access_token, access_token_secret)
 api = tw.API(auth)
 
 # simple_streamlit_app.py
-"""
-Explanation
-"""
 
-import streamlit as st
 
 st.title('HCP Classifier demo')
 
@@ -84,7 +92,7 @@ def color_hcp(val):
     the css property `'color: red'` for negative
     strings, black otherwise.
     """
-    color = 'green' if val == 'HCP' else 'grey'
+    color = '#00a569' if val == 'HCP' else 'grey'
     return 'color: %s' % color
 
 # Subset relevant columns and stylize
@@ -93,9 +101,3 @@ subset = df[columns].style.applymap(color_hcp)
 
 # Display dataframe
 st.dataframe(subset)
-
-
-
-s = st.text_input('Type a name in the box below')
-
-st.write(f'Hello {s}')
