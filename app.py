@@ -7,20 +7,6 @@ import numpy as np
 
 from credentials import *
 
-CURRENT_THEME = "blue"
-IS_DARK_THEME = True
-EXPANDER_TEXT = """
-    This is a custom theme. You can enable it by copying the following code
-    to `.streamlit/config.toml`:
-    ```python
-    [theme]
-    primaryColor = "#E694FF"
-    backgroundColor = "#00172B"
-    secondaryBackgroundColor = "#0083B8"
-    textColor = "#C6CDD4"
-    font = "sans-serif"
-    ```
-    """
 
 # Function for retrieving data
 def query_search(query, pages=1):
@@ -64,7 +50,9 @@ api = tw.API(auth)
 
 st.image("graphics/logo.png")
 
-"demo description"
+
+optionals = st.beta_expander("How does it work?", False)
+optionals.text("<add description>")
 
 # Declare a form and call methods directly on the returned object
 form = st.form(key='my_form')
@@ -93,14 +81,16 @@ if submit_button:
        the css property `'color: red'` for negative
        strings, black otherwise.
        """
-       color = '#00a569' if val == 'HCP' else 'grey'
-       return 'color: %s' % color
+       color = '#00a569' if val == 'HCP' else ''
+       return 'background-color: %s' % color
+    
    
    # Start index from 1
    df.index += 1
    
    # Subset relevant columns and stylize
    columns = ['name', 'followers', 'description', 'prediction']
+   subset = df[columns].style.applymap(color_hcp)
    subset = df[columns].style.applymap(color_hcp)
    
    # Display dataframe
