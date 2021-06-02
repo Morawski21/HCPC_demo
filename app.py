@@ -5,7 +5,6 @@ import tweepy as tw
 import joblib
 import numpy as np
 
-from urllib.error import URLError
 from credentials import *
 
 
