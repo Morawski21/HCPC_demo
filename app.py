@@ -62,42 +62,46 @@ api = tw.API(auth)
 
 # simple_streamlit_app.py
 
+st.image("graphics/logo.png")
 
-st.title('HCP Classifier demo')
-
+"demo description"
 
 # Declare a form and call methods directly on the returned object
 form = st.form(key='my_form')
-query = form.text_input('Search for users', "oncologist")
+query = form.text_input('Search for Twitter profiles', "oncologist")
 submit_button = form.form_submit_button(label='Search')
 
-# Get users
-df = query_search(query)
-
-# Preprocessing
-# Change NaN to arbitrary string - improves performance
-df.description = df.description.fillna('arbitraryemptydescription')
-# Concatenate name and description
-X = df.name + " " + df.description
-
-# Predict labels and change to text
-df.prediction = [clf.predict(pd.Series(profile))[0] for profile in X]
-df.prediction = df.prediction.map({1: 'HCP', 0: 'non-HCP'})
-
-
-# Green text for predicted HCPs
-def color_hcp(val):
-    """
-    Takes a scalar and returns a string with
-    the css property `'color: red'` for negative
-    strings, black otherwise.
-    """
-    color = '#00a569' if val == 'HCP' else 'grey'
-    return 'color: %s' % color
-
-# Subset relevant columns and stylize
-columns = ['name', 'followers', 'description', 'prediction']
-subset = df[columns].style.applymap(color_hcp)
-
-# Display dataframe
-st.dataframe(subset)
+if submit_button:
+   # Get users
+   df = query_search(query)
+   
+   # Preprocessing
+   # Change NaN to arbitrary string - improves performance
+   df.description = df.description.fillna('arbitraryemptydescription')
+   # Concatenate name and description
+   X = df.name + " " + df.description
+   
+   # Predict labels and change to text
+   df.prediction = [clf.predict(pd.Series(profile))[0] for profile in X]
+   df.prediction = df.prediction.map({1: 'HCP', 0: 'non-HCP'})
+   
+   
+   # Green text for predicted HCPs
+   def color_hcp(val):
+       """
+       Takes a scalar and returns a string with
+       the css property `'color: red'` for negative
+       strings, black otherwise.
+       """
+       color = '#00a569' if val == 'HCP' else 'grey'
+       return 'color: %s' % color
+   
+   # Start index from 1
+   df.index += 1
+   
+   # Subset relevant columns and stylize
+   columns = ['name', 'followers', 'description', 'prediction']
+   subset = df[columns].style.applymap(color_hcp)
+   
+   # Display dataframe
+   st.table(subset)
