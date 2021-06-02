@@ -29,7 +29,8 @@ def query_search(query, pages=1):
             'friends': user.friends_count,
             'followers': user.followers_count,
             'description': user.description,
-            'prediction': np.NaN}
+            'prediction': np.NaN,
+            'url': "https://twitter.com/" + str(user.screen_name)}
             results = results.append([userdata], ignore_index=True)
     return results
  
@@ -53,6 +54,11 @@ st.image("graphics/logo.png")
 
 optionals = st.beta_expander("How does it work?", False)
 optionals.text("<add description>")
+optionals = st.beta_expander("Who fits in the HCP category?", False)
+optionals.text("<add description>")
+
+
+st.title("Search and classify Twitter profiles")
 
 # Declare a form and call methods directly on the returned object
 form = st.form(key='my_form')
@@ -95,3 +101,6 @@ if submit_button:
    
    # Display dataframe
    st.table(subset)
+   
+   
+
