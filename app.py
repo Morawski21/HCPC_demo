@@ -45,7 +45,7 @@ auth = tw.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
 # Call the API
-api = tw.API(auth)
+api = tw.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 # simple_streamlit_app.py
 
@@ -53,9 +53,15 @@ st.image("graphics/logo.png")
 
 
 optionals = st.beta_expander("How does it work?", False)
-optionals.text("<add description>")
-optionals = st.beta_expander("Who fits in the HCP category?", False)
-optionals.text("<add description>")
+optionals.markdown("""
+               The current version of the classifier uses profile description and username to classify
+               Twitter profiles. It uses a random forest algorithm which right now works best and can achieve an 86% F1 score
+               on our current dataset.
+               
+               The classifier works best on classifying diverse Twitter profiles. It requires further training and tuning (it can still make some mistakes).
+               You can try it out below by typing in any search query!
+               """)
+
 
 
 st.title("Search and classify Twitter profiles")
