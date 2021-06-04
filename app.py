@@ -1,12 +1,14 @@
+# Import Streamlit
 import streamlit as st
 
+# Import relevant packages
 import pandas as pd
 import tweepy as tw
 import joblib
 import numpy as np
 
+# Import credentials from the file (can be moved to Streamlit)
 from credentials import *
-
 
 # Function for retrieving data
 def query_search(query, pages=1):
@@ -39,7 +41,6 @@ def query_search(query, pages=1):
 clf = joblib.load("rfc_86.pkl")
 
 # Set up Tweepy
-
 # Authorize and set access to the API
 auth = tw.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -47,15 +48,14 @@ auth.set_access_token(access_token, access_token_secret)
 # Call the API
 api = tw.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
-# simple_streamlit_app.py
-
+# Add logo
 st.image("graphics/logo.png")
 
-
+# Add text box
 optionals = st.beta_expander("How does it work?", False)
 optionals.markdown("""
                The current version of the classifier uses profile description and username to classify
-               Twitter profiles. It uses a random forest algorithm which right now works best and can achieve an 86% F1 score
+               Twitter profiles. It relies on a random forest algorithm which right now works best and can achieve an 86% F1 score
                on our current dataset.
                
                The classifier works best on classifying diverse Twitter profiles. It requires further training and tuning (it can still make some mistakes).
@@ -63,19 +63,20 @@ optionals.markdown("""
                """)
 
 
-
+# Add header
 st.title("Search and classify Twitter profiles")
 
-# Declare a form and call methods directly on the returned object
+# Usr input + 'search' button
 form = st.form(key='my_form')
 query = form.text_input('Search for Twitter profiles', "oncologist")
 submit_button = form.form_submit_button(label='Search')
+
 
 if submit_button:
    # Get users
    df = query_search(query)
    
-   # Preprocessing
+   # Preprocessing - required for the classifier pipeline!
    # Change NaN to arbitrary string - improves performance
    df.description = df.description.fillna('arbitraryemptydescription')
    # Concatenate name and description
@@ -83,26 +84,18 @@ if submit_button:
    
    # Predict labels and change to text
    df.prediction = [clf.predict(pd.Series(profile))[0] for profile in X]
-   df.prediction = df.prediction.map({1: 'HCP', 0: 'non-HCP'})
-   
+   df.prediction = df.prediction.map({1: 'HCP', 0: 'non-HCP'}) 
    
    # Green text for predicted HCPs
    def color_hcp(val):
-       """
-       Takes a scalar and returns a string with
-       the css property `'color: red'` for negative
-       strings, black otherwise.
-       """
        color = '#00a569' if val == 'HCP' else ''
        return 'background-color: %s' % color
-    
    
    # Start index from 1
    df.index += 1
    
    # Subset relevant columns and stylize
    columns = ['name', 'followers', 'description', 'prediction']
-   subset = df[columns].style.applymap(color_hcp)
    subset = df[columns].style.applymap(color_hcp)
    
    # Display dataframe
