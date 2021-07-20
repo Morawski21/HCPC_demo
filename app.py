@@ -42,8 +42,9 @@ clf = joblib.load("rfc_86.pkl")
 
 # Set up Tweepy
 # Authorize and set access to the API
-auth = tw.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
+
+auth = tw.OAuthHandler(st.secrets["consumer_key"], st.secrets["consumer_secret"])
+auth.set_access_token(st.secrets["access_token"], st.secrets["access_token_secret"])
 
 # Call the API
 api = tw.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
